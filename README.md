@@ -20,7 +20,7 @@ Pallet Manager to come
 
 ## Usage
 
-1. **Configuration**: Drag the `SSH Connector` into your flow. Optionally, configure static default connection parameters (host, username, password, port) in the node's settings if you want to have fallback values.
+1. **Configuration**: Drag the `SSH Connection Open` into your flow. Optionally, configure static default connection parameters (host, username, password, port, privatekey, passkey) in the node's settings if you want to have fallback values.
 
 2. **Dynamic Parameters**: Send an input message to the node with payload properties specifying `host`, `port`, `username`, `password`, `privateKey`, and/or `passphrase` for dynamic connection setup. Example message payload for dynamic parameters:
 
