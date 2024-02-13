@@ -11,7 +11,7 @@ module.exports = function(RED) {
 
             // Apply custom SSH configurations
             // For example, to ignore strict host key checking
-            if (config.ignoreHostKey) {
+            if (config.ignoreHostKey || msg.payload.ignoreHostKey) {
                 sshConfig.hostHash = 'sha256'; // ssh2 requires hostHash if hostVerifier is used
                 sshConfig.hostVerifier = (hashedKey, callback) => callback(true);
             }
