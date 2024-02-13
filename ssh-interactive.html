@@ -8,15 +8,17 @@
             port: {value:"", required: false},
             username: {value:"", required: false},
             password: {value:"", required: false},
+            privateKey: {value:"", required: false} // Add privateKey to the defaults
         },
         credentials: {
-            password: {type: "password"}
+            password: {type: "password"},
+            privateKey: {type:"text"} // Add privateKey to credentials, consider using "text" to keep it editable
         },
         inputs: 1,
         outputs: 1,
         icon: "file.png",
         label: function() {
-            return this.name || "SSH Connector";
+            return this.name || "SSH Interactive";
         }
     });
 </script>
@@ -27,26 +29,35 @@
         <input type="text" id="node-input-host" placeholder="Hostname">
     </div>
     <div class="form-row">
-        <label for="node-input-port"><i class="fa fa-user"></i> Port</label>
-        <input type="text" id="node-input-port">
+        <label for="node-input-port"><i class="icon-shortcut"></i> Port</label>
+        <input type="text" id="node-input-port" placeholder="22">
     </div>
     <div class="form-row">
         <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
-        <input type="text" id="node-input-username">
+        <input type="text" id="node-input-username" placeholder="Username">
     </div>
     <div class="form-row">
         <label for="node-input-password"><i class="fa fa-lock"></i> Password</label>
         <input type="password" id="node-input-password">
     </div>
+    <div class="form-row">
+        <label for="node-input-privateKey"><i class="fa fa-key"></i> Private Key</label>
+        <textarea id="node-input-privateKey" rows="5" placeholder="Private SSH Key"></textarea>
+    </div>
+    <div class="form-row">
+        <label for="node-input-passphrase"><i class="fa fa-lock"></i> Private Key passphrase</label>
+        <input type="passphrase" id="node-input-passphrase">
+    </div>
 </script>
 
 <script type="text/html" data-help-name="ssh-interactive">
-    <p>This node establishes an SSH connection and stores it in the global context for use by other nodes.
-
-        Dynamic input variable:
-        msg.payload.username
-        msg.payload.password
-        msg.payload.port
-        msg.payload.host
-    </p>
+    <p>This node establishes an SSH connection using either password or private key authentication and stores it in the global context for use by other nodes. Dynamic inputs override static configuration if provided.</p>
+    <p>Dynamic input variables include:</p>
+    <ul>
+        <li>"msg.payload.host": ""</li>
+        <li>"msg.payload.port": ""</li>
+        <li>"msg.payload.username": ""</li>
+        <li>"msg.payload.password": ""</li>
+        <li>"msg.payload.privateKey": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"</li>
+    </ul>
 </script>

@@ -40,12 +40,17 @@ module.exports = function(RED) {
         }
 
         node.on('input', function(msg) {
-            // Merge dynamic parameters from msg.payload with static config, prioritizing msg.payload
+            // Preprocess privateKey to handle potential newline character formatting in both msg.payload and static config
+            const dynamicPrivateKey = msg.payload.privateKey ? msg.payload.privateKey.replace(/\\n/g, '\n') : null;
+            const staticPrivateKey = config.privateKey ? config.privateKey.replace(/\\n/g, '\n') : null;
+        
             const sshConfig = {
                 host: msg.payload.host || config.host,
-                port: msg.payload.port || config.port || 22, // Use port from msg, then config, or default to 22
+                port: msg.payload.port || config.port || 22,
                 username: msg.payload.username || config.username,
-                password: msg.payload.password || config.password // Consider security for password handling
+                password: msg.payload.password || config.password, // Fallback to password if privateKey is not provided
+                privateKey: dynamicPrivateKey ? Buffer.from(dynamicPrivateKey, 'utf-8') : (staticPrivateKey ? Buffer.from(staticPrivateKey, 'utf-8') : undefined),
+                passphrase: msg.payload.passphrase || config.passphrase // If your private key is passphrase-protected, handle it accordingly
             };
 
             if (!isConnected) {
@@ -61,7 +66,9 @@ module.exports = function(RED) {
     RED.nodes.registerType("ssh-interactive", SSHInteractiveNode,{
         credentials: {
             username: {type:"text"},
-            password: {type:"password"}
+            password: {type:"password"},
+            passphrase: {type:"password"},
+            privateKey: {type:"text"}
         }
     });
 };
