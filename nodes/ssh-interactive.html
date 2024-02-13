@@ -10,7 +10,8 @@
             password: {value:"", required: false},
             privateKey: {value:"-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA7yn3IuefL17Z...\n-----END RSA PRIVATE KEY-----", required: false},
             ignoreHostKey: {value: false},
-            enableLogging: {value: false}
+            enableLogging: {value: false},
+            kexAlgorithm: {value: "curve25519-sha256", required: true}
         },
         credentials: {
             password: {type: "password"},
@@ -51,6 +52,16 @@
         <input type="passphrase" id="node-input-passphrase">
     </div>
     <div class="form-row">
+        <label for="node-input-kexAlgorithm">Key Exchange Algorithm</label>
+        <select id="node-input-kexAlgorithm">
+            <option value="curve25519-sha256">curve25519-sha256</option>
+            <option value="ecdh-sha2-nistp256">ecdh-sha2-nistp256</option>
+            <option value="diffie-hellman-group-exchange-sha256">diffie-hellman-group-exchange-sha256</option>
+            <option value="diffie-hellman-group14-sha1">diffie-hellman-group14-sha1</option>
+            <option value="diffie-hellman-group-exchange-sha1">diffie-hellman-group-exchange-sha1</option>
+        </select>
+    </div>
+    <div class="form-row">
         <label for="node-input-ignoreHostKey"><i class="fa fa-shield"></i> Ignore Host Key Checking</label>
         <input type="checkbox" id="node-input-ignoreHostKey" style="display: inline-block; width: auto; vertical-align: top;">
     </div>
@@ -71,5 +82,6 @@
         <li>"msg.payload.privateKey": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"</li>
         <li>"msg.payload.passphrase": "password"</li>
         <li>"msg.payload.ignoreHostKey": "true"</li>
+        <li>"msg.payload.kexAlgorithms": "diffie-hellman-group-exchange-sha1"</li>
     </ul>
 </script>
