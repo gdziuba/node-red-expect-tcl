@@ -12,7 +12,7 @@ The `NODE-RED-EXPECT-TCL` is a set of custom Node-RED nodes designed to establis
 
 ```
 git clone
-cd Node-RED-EXPECT-TCL
+cd node-red-nodespect
 npm install
 ```
 
