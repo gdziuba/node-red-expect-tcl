@@ -5,7 +5,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var isConnected = false; // Keep track of connection status
         var node = this;
-        var statusInterval; // Interval for checking connection status
+        var statusInterval;
         var enableLogging = config.enableLogging;
 
         function updateNodeStatus() {
@@ -40,8 +40,8 @@ module.exports = function(RED) {
             conn.on('ready', () => {
                 isConnected = true;
                 updateNodeStatus();
-                node.send({payload: "connected"});
-
+                
+                // Notify connection established
                 if (enableLogging) {
                     node.log('SSH Connection Established');
                 }
@@ -58,13 +58,22 @@ module.exports = function(RED) {
                         node.log('SSH Shell Opened');
                     }
 
+                    let initialOutput = ''; // Variable to collect initial output
+
+                    stream.on('data', (data) => {
+                        initialOutput += data.toString(); // Collect output
+                    }).on('close', () => {
+                        // Handle stream close
+                    });
+
+                    // Delay sending the initial output to ensure collection of data
+                    setTimeout(() => {
+                        msg.payload = initialOutput;
+                        node.send(msg); // Send the initial collected output in msg.payload
+                    }, 1000); // Adjust delay as necessary based on expected output timing
+
                     // Store the stream for later use in the global context
                     node.context().global.set('sshSession', stream);
-
-                    stream.on('close', () => {
-                        isConnected = false;
-                        updateNodeStatus(); // Update status immediately upon disconnection
-                    });
                 });
             }).on('error', (err) => {
                 isConnected = false;
