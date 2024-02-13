@@ -9,8 +9,19 @@ module.exports = function(RED) {
         function connectSSH(sshConfig, msg) {
             var conn = new Client();
 
-            // Apply custom SSH configurations
-            // For example, to ignore strict host key checking
+            // Dynamically set the KEX algorithms if specified in the message payload
+            // or use a sensible default that includes both secure and compatible options
+            const defaultKexAlgorithms = [
+                'curve25519-sha256',
+                'ecdh-sha2-nistp256',
+                'diffie-hellman-group-exchange-sha256',
+                'diffie-hellman-group14-sha1', // For compatibility with older devices
+                'diffie-hellman-group-exchange-sha1' // Least secure, included for compatibility
+            ];
+            sshConfig.algorithms = sshConfig.algorithms || {};
+            sshConfig.algorithms.kex = msg.payload.kexAlgorithms || defaultKexAlgorithms;
+
+            // Custom SSH configurations, e.g., to ignore strict host key checking
             if (config.ignoreHostKey || msg.payload.ignoreHostKey) {
                 sshConfig.hostHash = 'sha256'; // ssh2 requires hostHash if hostVerifier is used
                 sshConfig.hostVerifier = (hashedKey, callback) => callback(true);
@@ -46,7 +57,7 @@ module.exports = function(RED) {
                 node.status({fill: "red", shape: "ring", text: "disconnected"});
             });
 
-            // Prepare and connect with the provided sshConfig
+            // Connect with the prepared sshConfig
             conn.connect(sshConfig);
         }
 
@@ -54,6 +65,7 @@ module.exports = function(RED) {
             const dynamicPrivateKey = msg.payload.privateKey ? msg.payload.privateKey.replace(/\\n/g, '\n') : null;
             const staticPrivateKey = config.privateKey ? config.privateKey.replace(/\\n/g, '\n') : null;
 
+            // Prepare sshConfig with host, port, username, password, privateKey, and passphrase
             const sshConfig = {
                 host: msg.payload.host || config.host,
                 port: msg.payload.port || config.port || 22,
@@ -72,7 +84,7 @@ module.exports = function(RED) {
             // Connection cleanup logic if necessary
         });
     }
-    RED.nodes.registerType("ssh-connection-open", SSHInteractiveNode,{
+    RED.nodes.registerType("ssh-connection-open", SSHInteractiveNode, {
         credentials: {
             username: {type: "text"},
             password: {type: "password"},
