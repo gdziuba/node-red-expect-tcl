@@ -5,7 +5,8 @@
         defaults: {
             name: {value:""},
             command: {value:"", required:false},
-            disablePagination: {value:false}
+            disablePagination: {value:false},
+            enableLogging: {value: false, required: false}
         },
         inputs:1,
         outputs:1,
@@ -31,6 +32,10 @@
                 style="margin-left: 4px; cursor: help; font-size: 0.625rem; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center;">
                 <i style="font-family: ui-serif;">fx</i>
             </a>
+    </div>
+    <div class="form-row">
+        <label for="node-input-enableLogging"><i class="icon icon-bookmark"></i> Enable Logging</label>
+        <input type="checkbox" id="node-input-enableLogging" style="display: inline-block; width: auto; vertical-align: top;">
     </div> 
 </script>
 

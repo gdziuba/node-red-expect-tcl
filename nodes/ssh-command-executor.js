@@ -2,7 +2,8 @@ module.exports = function(RED) {
     function SSHCommandExecutorNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        node.disablePagination = config.disablePagination; // Static config for disabling pagination
+        node.disablePagination = config.disablePagination; 
+        node.enableLogging = config.enableLogging; 
 
         node.on('input', function(msg) {
             const stream = this.context().global.get('sshSession');
@@ -11,8 +12,7 @@ module.exports = function(RED) {
                 return;
             }
 
-            // Determine whether to disable pagination
-            // Check msg.payload.more first, then fall back to static config
+
             const disablePagination = msg.payload.more !== undefined ? msg.payload.more : node.disablePagination;
 
             if (msg.payload && msg.payload.command) {
@@ -31,6 +31,11 @@ module.exports = function(RED) {
 
                 const onData = (data) => {
                     const output = data.toString();
+                    
+                    if (node.enableLogging) {
+                        node.log(`\nSSH Output: ${output}`);
+                    }
+                    
                     if (collecting) {
                         if (output.includes(endMarker)) {
                             stream.removeListener('data', onData); // Clean up listener
@@ -46,6 +51,11 @@ module.exports = function(RED) {
                     }
                 };
                 stream.on('data', onData);
+
+                // Optionally, log the command being sent if logging is enabled
+                if (node.enableLogging) {
+                    node.log(`SSH Command Sent: ${commandToSend}`);
+                }
 
                 // Write the command to the stream
                 stream.write(commandToSend);
