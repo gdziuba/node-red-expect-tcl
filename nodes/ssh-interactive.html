@@ -8,7 +8,8 @@
             port: {value:"", required: false},
             username: {value:"", required: false},
             password: {value:"", required: false},
-            privateKey: {value:"", required: false} // Add privateKey to the defaults
+            privateKey: {value:"", required: false},
+            ignoreHostKey: {value: false}
         },
         credentials: {
             password: {type: "password"},
@@ -48,6 +49,10 @@
         <label for="node-input-passphrase"><i class="fa fa-lock"></i> Private Key passphrase</label>
         <input type="passphrase" id="node-input-passphrase">
     </div>
+    <div class="form-row">
+        <label for="node-input-ignoreHostKey"><i class="fa fa-shield"></i> Ignore Host Key Checking</label>
+        <input type="checkbox" id="node-input-ignoreHostKey" style="display: inline-block; width: auto; vertical-align: top;">
+    </div>    
 </script>
 
 <script type="text/html" data-help-name="ssh-connection-open">
