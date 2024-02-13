@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ssh-interactive', {
+        category: 'network',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            host: {value:"", required: true},
+            username: {value:"", required: true},
+            password: {value:"", required: true},
+        },
+        credentials: {
+            password: {type: "password"}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "file.png",
+        label: function() {
+            return this.name || "SSH Connector";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="ssh-interactive">
+    <div class="form-row">
+        <label for="node-input-host"><i class="fa fa-server"></i> Host</label>
+        <input type="text" id="node-input-host" placeholder="Hostname">
+    </div>
+    <div class="form-row">
+        <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="ssh-interactive">
+    <p>This node establishes an SSH connection and stores it in the global context for use by other nodes.</p>
+</script>

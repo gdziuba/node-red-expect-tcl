@@ -1,0 +1,23 @@
+{
+  "name": "node-red-tcl",
+  "version": "0.0.1",
+  "description": "expect notation for node-red",
+  "node-red"     : {
+    "nodes": {
+        "ssh-expect-execution": "ssh-command-executor.js",
+        "ssh-expect-close": "ssh-connection-closer.js",
+        "ssh-interactive": "ssh-interactive.js"
+      }
+  },
+  "dependencies": {
+    "ssh2": "1.15.*"
+},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "expect"
+  ],
+  "author": "gdziuba",
+  "license": "ISC"
+}
