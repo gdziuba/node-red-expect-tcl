@@ -4,7 +4,8 @@
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
-            command: {value:"", required:false}
+            command: {value:"", required:false},
+            disablePagination: {value:false}
         },
         inputs:1,
         outputs:1,
@@ -20,12 +21,17 @@
         <label for="node-input-command"><i class="fa fa-terminal"></i> Command</label>
         <input type="text" id="node-input-command" placeholder="Command to execute">
     </div>
+    <div class="form-row">
+        <label for="node-input-disablePagination"><i class="fa fa-shield"></i> disable pagination for "cisco"</label>
+        <input type="checkbox" id="node-input-disablePagination" style="display: inline-block; width: auto; vertical-align: top;" title="Enable this for devices like Cisco routers.">
+    </div> 
 </script>
 
 <script type="text/html" data-help-name="ssh-command-executor">
     <p>This node executes a command on the remote system using an established SSH connection from the SSH Connector Node. The command can be specified in the node configuration or dynamically via <code>msg.payload.command</code>.
-    
-    Dynamic Variables:
-    msg.payload.command
+        <ul>
+            <li>Dynamic Variables:</li>
+            <li>msg.payload.command</li>
+            <li>msg.payload.more</li>
     </p>
 </script>

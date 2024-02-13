@@ -2,6 +2,7 @@ module.exports = function(RED) {
     function SSHCommandExecutorNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        node.disablePagination = config.disablePagination; // Static config for disabling pagination
 
         node.on('input', function(msg) {
             const stream = this.context().global.get('sshSession');
@@ -10,11 +11,21 @@ module.exports = function(RED) {
                 return;
             }
 
+            // Determine whether to disable pagination
+            // Check msg.payload.more first, then fall back to static config
+            const disablePagination = msg.payload.more !== undefined ? msg.payload.more : node.disablePagination;
+
             if (msg.payload && msg.payload.command) {
-                // Combine commands to ensure 'cd' effect persists for 'ls'
                 const commands = Array.isArray(msg.payload.command) ? msg.payload.command.join(' && ') : msg.payload.command;
                 const endMarker = `cmd_end_${Math.random().toString(36).substr(2, 9)}`;
-                const command = `${commands} ; echo ${endMarker}`;
+                let commandToSend = commands;
+                
+                // If disablePagination is true, prepend 'terminal length 0'
+                if (disablePagination === true) {
+                    commandToSend = `terminal length 0 && ${commandToSend}`;
+                }
+                commandToSend += `; echo ${endMarker}\n`; // Append endMarker to the command
+                
                 let buffer = '';
                 let collecting = false;
 
@@ -22,26 +33,22 @@ module.exports = function(RED) {
                     const output = data.toString();
                     if (collecting) {
                         if (output.includes(endMarker)) {
-                            // End of command output detected
-                            stream.removeListener('data', onData); // Clean up listener to prevent memory leak
-                            // Remove marker and potential command echoes before sending
+                            stream.removeListener('data', onData); // Clean up listener
                             const cleanOutput = buffer.replace(new RegExp(`${endMarker}|${commands.replace(/&&/g, '')}`, 'g'), '').trim();
                             msg.payload = { result: cleanOutput };
                             node.send(msg);
-                            collecting = false; // Reset collecting state
+                            collecting = false; // Reset state
                         } else {
                             buffer += output;
                         }
                     } else if (output.includes(endMarker)) {
-                        // This catches the case where the output might start being collected
-                        // after the command has already started executing
                         collecting = true;
                     }
                 };
                 stream.on('data', onData);
 
-                // Write command to the stream, ensuring we start with 'cd' to persist the directory change
-                stream.write(`cd $(pwd) && ${command}\n`);
+                // Write the command to the stream
+                stream.write(commandToSend);
             } else {
                 node.warn("No command provided.");
             }

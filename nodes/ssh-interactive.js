@@ -6,7 +6,7 @@ module.exports = function(RED) {
         var isConnected = false; // Keep track of connection status
         var node = this;
 
-        function connectSSH(sshConfig) {
+        function connectSSH(sshConfig, msg) {
             var conn = new Client();
 
             // Apply custom SSH configurations
@@ -64,7 +64,7 @@ module.exports = function(RED) {
             };
 
             if (!isConnected) {
-                connectSSH(sshConfig); // Connect using prioritized parameters
+                connectSSH(sshConfig, msg); // Connect using prioritized parameters
             }
         });
 
