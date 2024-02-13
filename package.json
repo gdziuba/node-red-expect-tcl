@@ -1,7 +1,7 @@
 {
-  "name": "@gdziuba/node-red-tcl",
+  "name": "@gdziuba/node-red-nodespect",
   "version": "0.0.1",
-  "description": "Expect for Node-RED using SSH",
+  "description": "This is a package of nodes where one can create a TCL/Expect like flow",
   "engines": {
     "node": ">=14"
   },
@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/gdziuba/node-red-expect-tcl"
+    "url": "https://github.com/gdziuba/node-red-nodespect"
   },
   "author": {
     "name": "Grey Dziuba",
