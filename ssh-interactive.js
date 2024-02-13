@@ -3,11 +3,11 @@ const { Client } = require('ssh2');
 module.exports = function(RED) {
     function SSHInteractiveNode(config) {
         RED.nodes.createNode(this, config);
-        var node = this;
-        var conn = new Client();
         var isConnected = false; // Keep track of connection status
+        var node = this;
 
-        function connectSSH() {
+        function connectSSH(sshConfig) {
+            var conn = new Client();
             conn.on('ready', () => {
                 node.log('SSH Client Ready');
                 isConnected = true;
@@ -31,34 +31,37 @@ module.exports = function(RED) {
                         node.context().global.set('sshSession', null); // Clear the stream from global context
                         node.status({fill: "red", shape: "ring", text: "disconnected"});
                     });
-
-                    // Optionally handle data from the session
                 });
             }).on('error', (err) => {
                 node.error('SSH Client Error: ' + err.toString());
                 isConnected = false;
                 node.status({fill: "red", shape: "ring", text: "disconnected"});
-            }).connect({
-                host: config.host,
-                port: 22,
-                username: config.username,
-                password: config.password // Consider using privateKey for production environments
-            });
+            }).connect(sshConfig);
         }
 
         node.on('input', function(msg) {
+            // Merge dynamic parameters from msg.payload with static config, prioritizing msg.payload
+            const sshConfig = {
+                host: msg.payload.host || config.host,
+                port: msg.payload.port || config.port || 22, // Use port from msg, then config, or default to 22
+                username: msg.payload.username || config.username,
+                password: msg.payload.password || config.password // Consider security for password handling
+            };
+
             if (!isConnected) {
-                connectSSH(); // Connect if not already connected
+                connectSSH(sshConfig); // Connect using prioritized parameters
             }
-            // Handle the input message, possibly executing SSH commands
+            // If already connected, you might want to handle additional messages here
         });
 
         this.on('close', function() {
-            // Ensure the connection is properly closed when the node is redeployed or Node-RED is stopped
-            if (conn && isConnected) {
-                conn.end();
-            }
+            // Connection cleanup logic if necessary
         });
     }
-    RED.nodes.registerType("ssh-interactive", SSHInteractiveNode);
+    RED.nodes.registerType("ssh-interactive", SSHInteractiveNode,{
+        credentials: {
+            username: {type:"text"},
+            password: {type:"password"}
+        }
+    });
 };

@@ -4,9 +4,10 @@
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
-            host: {value:"", required: true},
-            username: {value:"", required: true},
-            password: {value:"", required: true},
+            host: {value:"", required: false},
+            port: {value:"", required: false},
+            username: {value:"", required: false},
+            password: {value:"", required: false},
         },
         credentials: {
             password: {type: "password"}
@@ -26,6 +27,10 @@
         <input type="text" id="node-input-host" placeholder="Hostname">
     </div>
     <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-user"></i> Port</label>
+        <input type="text" id="node-input-port">
+    </div>
+    <div class="form-row">
         <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
         <input type="text" id="node-input-username">
     </div>
@@ -36,5 +41,12 @@
 </script>
 
 <script type="text/html" data-help-name="ssh-interactive">
-    <p>This node establishes an SSH connection and stores it in the global context for use by other nodes.</p>
+    <p>This node establishes an SSH connection and stores it in the global context for use by other nodes.
+
+        Dynamic input variable:
+        msg.payload.username
+        msg.payload.password
+        msg.payload.port
+        msg.payload.host
+    </p>
 </script>
