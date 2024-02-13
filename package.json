@@ -1,8 +1,12 @@
 {
-  "name": "node-red-tcl",
+  "name": "@gdziuba/node-red-tcl",
   "version": "0.0.1",
-  "description": "expect notation for node-red",
+  "description": "Expect for Node-RED using SSH",
+  "engines": {
+    "node": ">=14"
+  },
   "node-red"     : {
+    "version": ">=3.0.0",
     "nodes": {
         "ssh-expect-execution": "nodes/ssh-command-executor.js",
         "ssh-expect-close": "nodes/ssh-connection-closer.js",
@@ -13,13 +17,22 @@
   },
   "dependencies": {
     "ssh2": "1.15.*"
-},
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "expect"
+    "expect",
+    "ssh",
+    "tcl"
   ],
-  "author": "gdziuba",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gdziuba/node-red-expect-tcl"
+  },
+  "author": {
+    "name": "Grey Dziuba",
+    "url": "https://github.com/gdziuba"
+  },
   "license": "Apache-2.0"
 }
