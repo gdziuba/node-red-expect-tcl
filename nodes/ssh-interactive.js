@@ -63,7 +63,7 @@ module.exports = function(RED) {
             // Connection cleanup logic if necessary
         });
     }
-    RED.nodes.registerType("ssh-interactive", SSHInteractiveNode,{
+    RED.nodes.registerType("ssh-connection-open", SSHInteractiveNode,{
         credentials: {
             username: {type:"text"},
             password: {type:"password"},

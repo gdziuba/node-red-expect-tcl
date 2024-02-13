@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    RED.nodes.registerType('extract-last-n-lines',{
+        category: 'ssh expect tcl',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            numberOfLines: {value:"all", required:true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name || "Extract Last Lines";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="extract-last-n-lines">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-numberOfLines"><i class="fa fa-list-ol"></i> Number of Lines</label>
+        <input type="text" id="node-input-numberOfLines" placeholder="Enter a number or 'all'">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="extract-last-n-lines">
+    <p>This node extracts the last N lines from a text payload. Specify the number of lines to extract, or use 'all' to include all lines.</p>
+    <p>Input should be provided in <code>msg.payload.result</code>.</p>
+</script>

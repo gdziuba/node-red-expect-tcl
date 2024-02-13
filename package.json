@@ -6,7 +6,9 @@
     "nodes": {
         "ssh-expect-execution": "nodes/ssh-command-executor.js",
         "ssh-expect-close": "nodes/ssh-connection-closer.js",
-        "ssh-interactive": "nodes/ssh-interactive.js"
+        "ssh-interactive": "nodes/ssh-interactive.js",
+        "ssh-extract-lines": "nodes/ssh-extract-lines.js",
+        "ssh-stringsearch": "nodes/ssh-stringsearch.js"
       }
   },
   "dependencies": {

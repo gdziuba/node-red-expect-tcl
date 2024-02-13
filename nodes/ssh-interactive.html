@@ -1,6 +1,6 @@
 <script type="text/javascript">
-    RED.nodes.registerType('ssh-interactive', {
-        category: 'network',
+    RED.nodes.registerType('ssh-connection-open', {
+        category: 'ssh expect tcl',
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
@@ -23,7 +23,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="ssh-interactive">
+<script type="text/html" data-template-name="ssh-connection-open">
     <div class="form-row">
         <label for="node-input-host"><i class="fa fa-server"></i> Host</label>
         <input type="text" id="node-input-host" placeholder="Hostname">
@@ -50,7 +50,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="ssh-interactive">
+<script type="text/html" data-help-name="ssh-connection-open">
     <p>This node establishes an SSH connection using either password or private key authentication and stores it in the global context for use by other nodes. Dynamic inputs override static configuration if provided.</p>
     <p>Dynamic input variables include:</p>
     <ul>
