@@ -40,8 +40,6 @@ module.exports = function(RED) {
             conn.on('ready', () => {
                 isConnected = true;
                 updateNodeStatus();
-                
-                // Notify connection established
                 if (enableLogging) {
                     node.log('SSH Connection Established');
                 }
@@ -58,12 +56,32 @@ module.exports = function(RED) {
                         node.log('SSH Shell Opened');
                     }
 
-                    let initialOutput = ''; // Variable to collect initial output
+                    let buffer = ''; // Use a buffer to accumulate data
+                    let initialOutput = '';
 
                     stream.on('data', (data) => {
-                        initialOutput += data.toString(); // Collect output
+                        let output = data.toString();
+                        initialOutput += data.toString();
+                        buffer += output;
+
+                        // Check for password prompt using case-insensitive regex
+                        if (/password:/i.test(buffer)) {
+                            // Extract the password from config or msg.payload
+                            let password = msg.payload.password2 || config.password;
+
+                            if (password) {
+                                stream.write(password + '\n');
+                                buffer = ''; // Clear buffer after sending password
+                                if (enableLogging) {
+                                    node.log('Password submitted to SSH session');
+                                }
+                            } else {
+                                node.warn('Password prompt detected but no password provided.');
+                            }
+                        }
                     }).on('close', () => {
-                        // Handle stream close
+                        isConnected = false;
+                        updateNodeStatus(); // Update status immediately upon disconnection
                     });
 
                     // Delay sending the initial output to ensure collection of data
@@ -78,7 +96,6 @@ module.exports = function(RED) {
             }).on('error', (err) => {
                 isConnected = false;
                 updateNodeStatus();
-
                 if (enableLogging) {
                     node.error('SSH Connection Error: ' + err.toString());
                 }
