@@ -4,9 +4,9 @@
   "description": "expect notation for node-red",
   "node-red"     : {
     "nodes": {
-        "ssh-expect-execution": "ssh-command-executor.js",
-        "ssh-expect-close": "ssh-connection-closer.js",
-        "ssh-interactive": "ssh-interactive.js"
+        "ssh-expect-execution": "nodes/ssh-command-executor.js",
+        "ssh-expect-close": "nodes/ssh-connection-closer.js",
+        "ssh-interactive": "nodes/ssh-interactive.js"
       }
   },
   "dependencies": {

@@ -16,11 +16,13 @@ cd Node-RED-EXPECT-TCL
 npm install
 ```
 
+Pallet Manager to come
+
 ## Usage
 
 1. **Configuration**: Drag the `SSH Connector` into your flow. Optionally, configure static default connection parameters (host, username, password, port) in the node's settings if you want to have fallback values.
 
-2. **Dynamic Parameters**: Send an input message to the node with payload properties specifying `host`, `port`, `username`, and `password` for dynamic connection setup. Example message payload for dynamic parameters:
+2. **Dynamic Parameters**: Send an input message to the node with payload properties specifying `host`, `port`, `username`, `password`, `privateKey`, and/or `passphrase` for dynamic connection setup. Example message payload for dynamic parameters:
 
     ```json
     {
@@ -28,7 +30,9 @@ npm install
         "host": "example.com",
         "port": 22,
         "username": "user",
-        "password": "password"
+        "password": "password",
+        "privateKey": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+        "passphrase": "password"
       }
     }
     ```
