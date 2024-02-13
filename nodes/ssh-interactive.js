@@ -5,6 +5,16 @@ module.exports = function(RED) {
         RED.nodes.createNode(this, config);
         var isConnected = false; // Keep track of connection status
         var node = this;
+        var statusInterval; // Interval for checking connection status
+        var enableLogging = config.enableLogging;
+
+        function updateNodeStatus() {
+            if (isConnected) {
+                node.status({fill: "green", shape: "dot", text: "connected"});
+            } else {
+                node.status({fill: "red", shape: "ring", text: "disconnected"});
+            }
+        }
 
         function connectSSH(sshConfig, msg) {
             var conn = new Client();
@@ -28,37 +38,51 @@ module.exports = function(RED) {
             }
 
             conn.on('ready', () => {
-                node.log('SSH Client Ready');
                 isConnected = true;
-                node.status({fill: "green", shape: "dot", text: "connected"});
-                node.send({payload: "connected"}); // Notify flow of connection
+                updateNodeStatus();
+                node.send({payload: "connected"});
+
+                if (enableLogging) {
+                    node.log('SSH Connection Established');
+                }
 
                 conn.shell((err, stream) => {
                     if (err) {
                         node.error('SSH Shell Error: ' + err.toString());
                         isConnected = false;
-                        node.status({fill: "red", shape: "ring", text: "disconnected"});
+                        updateNodeStatus();
                         return;
+                    }
+
+                    if (enableLogging) {
+                        node.log('SSH Shell Opened');
                     }
 
                     // Store the stream for later use in the global context
                     node.context().global.set('sshSession', stream);
 
                     stream.on('close', () => {
-                        node.log('SSH session closed');
                         isConnected = false;
-                        node.context().global.set('sshSession', null); // Clear the stream from global context
-                        node.status({fill: "red", shape: "ring", text: "disconnected"});
+                        updateNodeStatus(); // Update status immediately upon disconnection
                     });
                 });
             }).on('error', (err) => {
-                node.error('SSH Client Error: ' + err.toString());
                 isConnected = false;
-                node.status({fill: "red", shape: "ring", text: "disconnected"});
+                updateNodeStatus();
+
+                if (enableLogging) {
+                    node.error('SSH Connection Error: ' + err.toString());
+                }
             });
 
             // Connect with the prepared sshConfig
             conn.connect(sshConfig);
+        }
+
+        // Initialize and clear the status check interval
+        function initStatusCheck() {
+            if (statusInterval) clearInterval(statusInterval);
+            statusInterval = setInterval(updateNodeStatus, 5000); // Check every 5 seconds
         }
 
         node.on('input', function(msg) {
@@ -77,11 +101,14 @@ module.exports = function(RED) {
 
             if (!isConnected) {
                 connectSSH(sshConfig, msg); // Connect using prioritized parameters
+                initStatusCheck(); // Initialize the status check upon new connection
             }
         });
 
         this.on('close', function() {
-            // Connection cleanup logic if necessary
+            if (statusInterval) clearInterval(statusInterval); // Clear interval on node close
+            isConnected = false;
+            updateNodeStatus(); // Ensure status is updated when node is closed
         });
     }
     RED.nodes.registerType("ssh-connection-open", SSHInteractiveNode, {

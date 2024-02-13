@@ -9,7 +9,8 @@
             username: {value:"", required: false},
             password: {value:"", required: false},
             privateKey: {value:"-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA7yn3IuefL17Z...\n-----END RSA PRIVATE KEY-----", required: false},
-            ignoreHostKey: {value: false}
+            ignoreHostKey: {value: false},
+            enableLogging: {value: false}
         },
         credentials: {
             password: {type: "password"},
@@ -52,6 +53,10 @@
     <div class="form-row">
         <label for="node-input-ignoreHostKey"><i class="fa fa-shield"></i> Ignore Host Key Checking</label>
         <input type="checkbox" id="node-input-ignoreHostKey" style="display: inline-block; width: auto; vertical-align: top;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-enableLogging"><i class="icon icon-bookmark"></i> Enable Logging</label>
+        <input type="checkbox" id="node-input-enableLogging" style="display: inline-block; width: auto; vertical-align: top;">
     </div>    
 </script>
 
